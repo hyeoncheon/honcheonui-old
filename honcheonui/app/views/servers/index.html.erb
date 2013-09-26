@@ -1,0 +1,47 @@
+<h1>Listing servers</h1>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Status</th>
+    <th>Desc</th>
+    <th>Uuid</th>
+    <th>Os name</th>
+    <th>Os rel</th>
+    <th>Os</th>
+    <th>Os kernel</th>
+    <th>Os build</th>
+    <th>Os arch</th>
+    <th>Op mode</th>
+    <th>Op level</th>
+    <th>St uptime</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @servers.each do |server| %>
+  <tr>
+    <td><%= server.name %></td>
+    <td><%= server.status %></td>
+    <td><%= server.desc %></td>
+    <td><%= server.uuid %></td>
+    <td><%= server.os_name %></td>
+    <td><%= server.os_rel %></td>
+    <td><%= server.os_id %></td>
+    <td><%= server.os_kernel %></td>
+    <td><%= server.os_build %></td>
+    <td><%= server.os_arch %></td>
+    <td><%= server.op_mode %></td>
+    <td><%= server.op_level %></td>
+    <td><%= server.st_uptime %></td>
+    <td><%= link_to 'Show', server %></td>
+    <td><%= link_to 'Edit', edit_server_path(server) %></td>
+    <td><%= link_to 'Destroy', server, :method => :delete, :data => { :confirm => 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Server', new_server_path %>

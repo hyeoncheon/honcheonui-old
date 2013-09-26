@@ -1,0 +1,70 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Name:</b>
+  <%= @server.name %>
+</p>
+
+<p>
+  <b>Status:</b>
+  <%= @server.status %>
+</p>
+
+<p>
+  <b>Desc:</b>
+  <%= @server.desc %>
+</p>
+
+<p>
+  <b>Uuid:</b>
+  <%= @server.uuid %>
+</p>
+
+<p>
+  <b>Os name:</b>
+  <%= @server.os_name %>
+</p>
+
+<p>
+  <b>Os rel:</b>
+  <%= @server.os_rel %>
+</p>
+
+<p>
+  <b>Os:</b>
+  <%= @server.os_id %>
+</p>
+
+<p>
+  <b>Os kernel:</b>
+  <%= @server.os_kernel %>
+</p>
+
+<p>
+  <b>Os build:</b>
+  <%= @server.os_build %>
+</p>
+
+<p>
+  <b>Os arch:</b>
+  <%= @server.os_arch %>
+</p>
+
+<p>
+  <b>Op mode:</b>
+  <%= @server.op_mode %>
+</p>
+
+<p>
+  <b>Op level:</b>
+  <%= @server.op_level %>
+</p>
+
+<p>
+  <b>St uptime:</b>
+  <%= @server.st_uptime %>
+</p>
+
+
+<%= link_to 'Edit', edit_server_path(@server) %> |
+<%= link_to 'Back', servers_path %>

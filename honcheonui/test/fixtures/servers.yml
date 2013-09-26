@@ -1,0 +1,31 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  name: MyString
+  status: MyString
+  desc: MyText
+  uuid: MyString
+  os_name: MyString
+  os_rel: MyString
+  os_id: MyString
+  os_kernel: MyString
+  os_build: MyString
+  os_arch: MyString
+  op_mode: MyString
+  op_level: MyString
+  st_uptime: 1
+
+two:
+  name: MyString
+  status: MyString
+  desc: MyText
+  uuid: MyString
+  os_name: MyString
+  os_rel: MyString
+  os_id: MyString
+  os_kernel: MyString
+  os_build: MyString
+  os_arch: MyString
+  op_mode: MyString
+  op_level: MyString
+  st_uptime: 1

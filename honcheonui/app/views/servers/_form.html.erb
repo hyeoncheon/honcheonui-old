@@ -1,0 +1,69 @@
+<%= form_for(@server) do |f| %>
+  <% if @server.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@server.errors.count, "error") %> prohibited this server from being saved:</h2>
+
+      <ul>
+      <% @server.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </div>
+  <div class="field">
+    <%= f.label :status %><br />
+    <%= f.text_field :status %>
+  </div>
+  <div class="field">
+    <%= f.label :desc %><br />
+    <%= f.text_area :desc %>
+  </div>
+  <div class="field">
+    <%= f.label :uuid %><br />
+    <%= f.text_field :uuid %>
+  </div>
+  <div class="field">
+    <%= f.label :os_name %><br />
+    <%= f.text_field :os_name %>
+  </div>
+  <div class="field">
+    <%= f.label :os_rel %><br />
+    <%= f.text_field :os_rel %>
+  </div>
+  <div class="field">
+    <%= f.label :os_id %><br />
+    <%= f.text_field :os_id %>
+  </div>
+  <div class="field">
+    <%= f.label :os_kernel %><br />
+    <%= f.text_field :os_kernel %>
+  </div>
+  <div class="field">
+    <%= f.label :os_build %><br />
+    <%= f.text_field :os_build %>
+  </div>
+  <div class="field">
+    <%= f.label :os_arch %><br />
+    <%= f.text_field :os_arch %>
+  </div>
+  <div class="field">
+    <%= f.label :op_mode %><br />
+    <%= f.text_field :op_mode %>
+  </div>
+  <div class="field">
+    <%= f.label :op_level %><br />
+    <%= f.text_field :op_level %>
+  </div>
+  <div class="field">
+    <%= f.label :st_uptime %><br />
+    <%= f.number_field :st_uptime %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
