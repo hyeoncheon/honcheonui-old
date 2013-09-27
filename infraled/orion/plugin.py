@@ -45,8 +45,16 @@ class Plugin(threading.Thread):
 		self.task_pre()
 		if self.plugin_type == 'periodic':
 			self.periodic()
+		elif self.plugin_type == 'handler':
+			self.handler_loop()
 		self.task_post()
 		self.logger.info('<%s> finished!' % self.getName())
+		return
+
+	def handler_loop(self):
+		while not self.__stop.is_set():
+			self.task_handler()
+			time.sleep(0.2)
 		return
 
 	def periodic(self):
@@ -61,7 +69,7 @@ class Plugin(threading.Thread):
 			else:
 				time.sleep(0.2)	# XXX HARD-CODING, PERFORMANCE
 		# XXX check no-more-queue!
-		self.logger.info('come out from the duty!')
+		self.logger.debug('come out from the duty!')
 		return
 
 	def task_pre(self):
@@ -76,6 +84,11 @@ class Plugin(threading.Thread):
 	def task_post(self):
 		return self.logger.debug('has no task_post. _PH_')
 
+	def task_handler(self):
+		if self.plugin_type == 'handler':
+			self.logger.error('handler need to implement this!')
+		return
+
 	def stop(self):
 		return self.__stop.set()
 
@@ -85,6 +98,13 @@ class Plugin(threading.Thread):
 		if (now_ts % self.int_rpt) == 0:
 			self.__rpt.set()
 		return
+
+
+	def mq_data_request(self, path, message):
+		msg = { 'type':'data_request', 'from':self.getName(),
+				'path':path, 'message':message}
+		return self.mqueue.dq.put(msg)
+
 
 
 class PluginManager():
@@ -148,7 +168,7 @@ class PluginManager():
 			now_ts = int(time.time())
 			if (now_ts % interval) == 0:
 				for p in self.plugins:
-					if p.is_alive():
+					if p.is_alive() and p.plugin_type == 'periodic':
 						p.tick(now_ts)
 				time.sleep(1)	# important! prevent double working.
 				return
@@ -169,10 +189,15 @@ class PluginManager():
 
 	def clean_all(self):
 		while len(self.plugins) > 0:
+			self.logger.info('%d plugin(s) remind...' % len(self.plugins))
 			self.clean()
+			time.sleep(0.5)
 		return
 
-	def shutdown_plugins():
+	def shutdown(self):
+		for p in self.plugins:
+			p.stop()
+		self.clean_all()
 		return
 
 
@@ -183,8 +208,8 @@ from collections import namedtuple
 class mQueue:
 	def __init__(self):
 		self.dq = queue.Queue(-1)
-		#self.mq = dict()
-		#self.hq = dict()
+		self.mq = dict()
+		self.hq = dict()
 
 
 # vim:set ts=4 sw=4:

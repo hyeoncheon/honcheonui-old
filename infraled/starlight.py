@@ -54,7 +54,7 @@ class StarLight(orion.runner.Daemon):
 		if self.opts.debug:
 			self.logger.debug('### plugin list: ----------')
 			for m in plugin_manager.get_list():
-				self.logger.debug('-- registered plugin <%s>' % m.name)
+				self.logger.debug('-- plugin <%s>' % m.name)
 			self.logger.debug('### plugin list: ----------')
 
 		self.logger.debug('ready! jump into the universe...')
@@ -71,10 +71,7 @@ class StarLight(orion.runner.Daemon):
 						time.clock(), self.runtime()))
 
 		self.logger.debug('loop exited. interrupted?')
-		for p in plugin_manager.get_list():
-			#plugin_manager.shutdown(p.name)
-			p.stop()
-			## join!!!
+		plugin_manager.shutdown()
 
 
 

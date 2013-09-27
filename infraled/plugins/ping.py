@@ -20,11 +20,10 @@ class ping(orion.plugin.Plugin):
 		return super().task_post()
 
 	def task_check(self):
-		self.logger.debug('is alive!')
 		return
 
 	def task_report(self):
-		self.logger.debug('report!')
+		self.mq_data_request('',"report i'm alive~!")
 		return
 
 
