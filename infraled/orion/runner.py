@@ -73,8 +73,8 @@ class Daemon:
 	def __del__(self):
 		if self.initialized:
 			# finalizing code here!
-			self.logger.info("an.yeong~!")
-			sys.stderr.write("an.yeong~!\n")	# to hell?
+			self.logger.info("Annyeong~!")
+			sys.stderr.write("Annyeong~!\n")	# to hell?
 		return
 
 	def initialize(self):

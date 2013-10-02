@@ -18,17 +18,17 @@ class Plugin(threading.Thread):
 		self.plugin_type = ptype
 		self.conf = conf
 		self.mqueue = message_queue
-		self.report_path = self.conf.get('report_path', '/server/ping')
+		self.report_path = self.conf.get('report_path', None)
 		self.logger = logger
 		self.__stop = threading.Event()
 		self.__chk = threading.Event()
 		self.__rpt = threading.Event()
 
-		self.setName('%s-%s-%s' % (ptype, pname, pver))
+		self.setName('%s-%s' % (ptype, pname))
 		loglevel = self.conf.get('loglevel')
-		self.logger.debug('  configured loglevel is %s' % loglevel)
+		self.logger.debug(' configured loglevel is %s' % loglevel)
 		loglevel = orion.util_logger_setlevel(self.logger, loglevel)
-		self.logger.info('  effective loglevel is %s' % loglevel)
+		self.logger.info('effective loglevel is %s' % loglevel)
 
 		if self.plugin_type == 'periodic':
 			self.int_chk = int(self.conf.get('check_interval', 0))
@@ -45,8 +45,8 @@ class Plugin(threading.Thread):
 		return
 
 	def run(self):
-		time.sleep(0.5)	# startup delay.
-		self.logger.info('starting <%s>...' % self.name)
+		time.sleep(1)	# startup delay.
+		self.logger.info('running <%s>...' % self.name)
 		self.task_pre()
 		if self.plugin_type == 'periodic':
 			self.periodic()
@@ -124,18 +124,18 @@ class PluginManager():
 		self.mqueue = mQueue()
 		self.plugins = list()
 
-		self.logger.info('<plugin manager> initialized!')
+		self.logger.info('plugin manager initialized!')
 		return
 
 	def load_plugin(self, plugin, wait_until_done):
-		self.logger.info('- trying to load <%s>...' % plugin)
+		self.logger.debug('  - trying to load <%s>...' % plugin)
 		try:
 			mod = __import__('plugins.%s' % plugin, fromlist = ['plugins'])
 			mclass = getattr(mod, plugin)
 			pn = getattr(mod, '_plugin_name')
 			pv = getattr(mod, '_plugin_version')
 			pt = getattr(mod, '_plugin_type')
-			self.logger.info('- %s version %s (%s)...' % (pn, pv, pt))
+			self.logger.debug('  - %s %s (%s)...' % (pn, pv, pt))
 			logger = self.logger.getChild(plugin)
 			conf = self.conf.get_branch('plugins/plugin[@name="%s"]' % plugin,
 					'honcheonui')
@@ -150,7 +150,7 @@ class PluginManager():
 			raise
 		else:
 			self.plugins.append(plugin_thread)
-			self.logger.info('<%s> registered.' % plugin)
+			self.logger.info('  <%s> registered.' % plugin)
 
 		if wait_until_done:
 			self.logger.debug('blocking mode. wait until done.')
@@ -164,10 +164,13 @@ class PluginManager():
 		return
 
 	def load_plugins(self, ptype, block = False):
-		self.logger.info('loading %s plugins...', ptype)
+		self.logger.debug(' loading %s plugins...', ptype)
+		cnt = 0
 		for plugin in self.conf.subnames('plugins/plugin[@type="%s"]' % ptype):
-			self.logger.debug('- loading plugin <%s>...' % plugin)
+			self.logger.debug(' - loading plugin <%s>...' % plugin)
 			self.load_plugin(plugin, block)
+			cnt += 1
+		self.logger.info(' ... %d %s module(s) loaded.' % (cnt, ptype))
 		return
 
 	def get_list(self):
@@ -191,7 +194,7 @@ class PluginManager():
 			# XXX KeyboardInterrupt
 			p.join(0.1)
 			if not p.is_alive():
-				self.logger.info('<%s> is done.' % p.getName())
+				self.logger.info('   <%s> is done.' % p.getName())
 				self.plugins.remove(p)
 			else:
 				#self.logger.debug('<%s> is alive.' % p.getName())
@@ -200,12 +203,13 @@ class PluginManager():
 
 	def clean_all(self):
 		while len(self.plugins) > 0:
-			self.logger.info('%d plugin(s) remind...' % len(self.plugins))
+			self.logger.info(' %d plugin(s) remind...' % len(self.plugins))
 			self.clean()
 			time.sleep(0.5)
 		return
 
 	def shutdown(self):
+		self.logger.info('final lap...')
 		for p in self.plugins:
 			p.stop()
 		self.clean_all()

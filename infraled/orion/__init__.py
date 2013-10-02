@@ -107,10 +107,10 @@ class Config:
 		el = None
 		nodelist = self.doc.findall(key)
 		if len(nodelist) > 1:
-			self.logger.warn("eep! duplicated key found. using first!")
+			self.logger.warn("eeep! key duplicated! using first.")
 			el = nodelist[0]
 		elif len(nodelist) < 1:
-			self.logger.warn("eep! kay not found. add new element!")
+			self.logger.warn("eeep! key not found! add new one.")
 			el = ElementTree.SubElement(self.doc.getroot(), "key")
 		else:
 			el = nodelist[0]
@@ -128,9 +128,9 @@ class Config:
 		"""
 		nodelist = self.doc.findall(key)
 		if len(nodelist) > 1:
-			self.logger.warn("eep! duplicated key found. using first!")
+			self.logger.warn("eeep! key duplicated! using first.")
 		elif len(nodelist) < 1:
-			self.logger.warn("eep! no value found for key!:%s" % key)
+			self.logger.debug("eeep! key not found!")
 			return default
 		return nodelist[0].text
 
@@ -170,7 +170,7 @@ class Config:
 			else:
 				self.doc.write(self.filename, 'utf-8')
 		else:
-			self.logger.warn('filename is not defined. abort!')
+			self.logger.error('ERR: filename is not defined. abort!')
 
 		return
 

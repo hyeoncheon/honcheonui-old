@@ -18,18 +18,19 @@ import orion.plugin
 
 class StarLight(orion.runner.Daemon):
 	def initialize(self):
-		self.logger.info("initializing %s..." % _my_name)
+		self.logger.info('starting engines...')
 		# first call. it can be call again.
-		self.init_more()
+		self.configure()
 
 		if not self.opts.debug:
 			self.daemonize()
-		self.logger.info('%s[%d] started!' % (_my_name, os.getpid()));
+		self.logger.info('gear on the dee! [%d]' % os.getpid());
 		return
 
-	def init_more(self):
+	def configure(self):
 		# initialize configurations...
-		self.logger.debug("  config with '%s'..." % self.opts.config)
+		#
+		self.logger.debug(" configuration with '%s'..." % self.opts.config)
 		try:
 			self.conf = orion.Config(filename = self.opts.config,
 					logger = self.logger)
@@ -41,9 +42,9 @@ class StarLight(orion.runner.Daemon):
 		self.conf.set('honcheonui/version', _version)
 
 		loglevel = self.conf.get('honcheonui/loglevel')
-		self.logger.debug('  configured loglevel is %s' % loglevel)
+		self.logger.debug('  - configured loglevel is %s' % loglevel)
 		loglevel = orion.util_logger_setlevel(self.logger, loglevel)
-		self.logger.info('  effective loglevel is %s' % loglevel)
+		self.logger.info('  - effective loglevel is %s' % loglevel)
 
 		try:
 			uuid_str = self.conf.get('honcheonui/uuid', 'noset')
@@ -51,10 +52,10 @@ class StarLight(orion.runner.Daemon):
 		except (ValueError, TypeError):
 			self.logger.warn('invalid uuid: %s' % uuid_str)
 			self.uuid = uuid.uuid1()
-			self.logger.info('new uuid generated: %s' % str(self.uuid))
+			self.logger.warn('new uuid generated: %s' % str(self.uuid))
 			self.conf.set('honcheonui/uuid', str(self.uuid), True)
 
-		self.logger.debug('%s configured!' % self.uuid)
+		self.logger.info(' configured!' % self.uuid)
 		return
 
 	def run(self):
@@ -70,9 +71,8 @@ class StarLight(orion.runner.Daemon):
 				self.logger.debug('-- plugin <%s>' % m.name)
 			self.logger.debug('### plugin list: ----------')
 
-		self.logger.debug('ready! jump into the universe...')
+		self.logger.info('ready! jump into the fire race!')
 		while not self.interrupted:
-			#self.logger.debug("i'm running")
 			plugin_manager.clean()
 			try:
 				plugin_manager.tick_at(5)	# FIXME HARD-CODING
@@ -83,8 +83,9 @@ class StarLight(orion.runner.Daemon):
 					(time.clock() / self.runtime() * 100,
 						time.clock(), self.runtime()))
 
-		self.logger.debug('loop exited. interrupted?')
+		self.logger.debug('loop exited. maybe interrupted?')
 		plugin_manager.shutdown()
+		self.logger.info('bye.')
 
 
 
