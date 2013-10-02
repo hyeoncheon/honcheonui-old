@@ -11,6 +11,7 @@ _version	= '0.0.1'
 
 import sys,os
 import time
+import uuid
 
 import orion.runner
 import orion.plugin
@@ -41,7 +42,16 @@ class StarLight(orion.runner.Daemon):
 		self.logger.debug('  loglevel: %s' %
 				self.conf.get('honcheonui/loglevel'))
 
-		self.logger.info('  %s configured!' % self.conf.get('honcheonui/name'))
+		try:
+			uuid_str = self.conf.get('honcheonui/uuid', 'noset')
+			self.uuid = uuid.UUID(uuid_str)
+		except (ValueError, TypeError):
+			self.logger.warn('invalid uuid: %s' % uuid_str)
+			self.uuid = uuid.uuid1()
+			self.logger.info('new uuid generated: %s' % str(self.uuid))
+			self.conf.set('honcheonui/uuid', str(self.uuid), True)
+
+		self.logger.info('  %s %s configured!' % (_my_name, self.uuid))
 		return
 
 	def run(self):
