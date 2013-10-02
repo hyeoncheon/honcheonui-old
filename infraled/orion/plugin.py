@@ -133,7 +133,8 @@ class PluginManager():
 			pt = getattr(mod, '_plugin_type')
 			self.logger.info('- %s version %s (%s)...' % (pn, pv, pt))
 			logger = self.logger.getChild(plugin)
-			conf = self.conf.get_branch('plugins/plugin[@name="%s"]' % plugin)
+			conf = self.conf.get_branch('plugins/plugin[@name="%s"]' % plugin,
+					'honcheonui')
 			plugin_thread = mclass(pn, pv, pt, conf, self.mqueue, logger)
 			plugin_thread.start()
 		except (ImportError, AttributeError) as e:

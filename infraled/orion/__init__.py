@@ -64,6 +64,7 @@ class Config:
 		else:
 			raise configError(1, 'initializing failed. no file and text.')
 
+		self.debug()
 		return
 
 	def set(self, key, value, save = False):
@@ -71,13 +72,20 @@ class Config:
 		If argument 'save' is True, it call method save() too.
 		If there is more than one node with save path, first on is used.
 		"""
+		el = None
 		nodelist = self.doc.findall(key)
 		if len(nodelist) > 1:
 			self.logger.warn("eep! duplicated key found. using first!")
+			el = nodelist[0]
 		elif len(nodelist) < 1:
-			self.logger.warn("oops! do you want add? not implemented!")
-			return None
-		nodelist[0].text = str(value)
+			self.logger.warn("eep! kay not found. add new element!")
+			el = ElementTree.SubElement(self.doc.getroot(), "key")
+		else:
+			el = nodelist[0]
+
+		el.text = str(value)
+
+		self.debug()
 		if save == True:
 			self.save()
 		return
@@ -94,8 +102,15 @@ class Config:
 			return default
 		return nodelist[0].text
 
-	def get_branch(self, key):
-		return Config(element = self.doc.find(key), logger = self.logger)
+	def get_branch(self, key, subtree = None):
+		branch = Config(element = self.doc.find(key), logger = self.logger)
+		if subtree != None:
+			branch.doc.getroot().append(self.doc.find(subtree))
+		branch.debug()
+		return branch
+
+	def get_branch_as_dict(self, key):
+		return self.get_branch(key)
 
 	def subkeys(self, key):
 		keylist = list()
@@ -114,19 +129,23 @@ class Config:
 		If argument 'filename' is not given, write on current file.
 		"""
 		### FIXME save backup!
-		if filename:
+		if filename != None:
 			self.filename = filename
 
 		if self.filename:
 			if ElementTree.VERSION >= "1.3.0":	# for python 3.x
-				self.doc.write(filename, 'utf-8', xml_declaration=True)
+				self.doc.write(self.filename, 'utf-8', xml_declaration=True)
 			else:
-				self.doc.write(filename, 'utf-8')
+				self.doc.write(self.filename, 'utf-8')
 		else:
 			self.logger.warn('filename is not defined. abort!')
 
 		return
 
-
+	def debug(self):
+		if False:
+			self.logger.debug('DEBUG for %s --------' % self)
+			ElementTree.dump(self.doc)
+		return
 
 # vim:set ts=4 sw=4:
