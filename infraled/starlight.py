@@ -39,8 +39,11 @@ class StarLight(orion.runner.Daemon):
 
 		self.conf.set('honcheonui/name', 'honcheonui-%s' % _my_name)
 		self.conf.set('honcheonui/version', _version)
-		self.logger.debug('  loglevel: %s' %
-				self.conf.get('honcheonui/loglevel'))
+
+		loglevel = self.conf.get('honcheonui/loglevel')
+		self.logger.debug('  configured loglevel is %s' % loglevel)
+		loglevel = orion.util_logger_setlevel(self.logger, loglevel)
+		self.logger.info('  effective loglevel is %s' % loglevel)
 
 		try:
 			uuid_str = self.conf.get('honcheonui/uuid', 'noset')
@@ -51,7 +54,7 @@ class StarLight(orion.runner.Daemon):
 			self.logger.info('new uuid generated: %s' % str(self.uuid))
 			self.conf.set('honcheonui/uuid', str(self.uuid), True)
 
-		self.logger.info('  %s %s configured!' % (_my_name, self.uuid))
+		self.logger.debug('%s configured!' % self.uuid)
 		return
 
 	def run(self):

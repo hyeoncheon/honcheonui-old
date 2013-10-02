@@ -5,10 +5,42 @@ __package_name__	= 'orion'
 __package_version__	= '0.1.0'
 
 import os
+import logging
 from xml.etree import ElementTree
+
+def util_logger_setlevel(logger, level):
+	if level == 'fatal':
+		logger.setLevel(logging.FATAL)
+	elif level == 'error':
+		logger.setLevel(logging.ERROR)
+	elif level == 'warn':
+		logger.setLevel(logging.WARN)
+	elif level == 'debug':
+		logger.setLevel(logging.DEBUG)
+	else:
+		logger.setLevel(logging.INFO)
+	return util_logger_getlevel(logger)
+
+def util_logger_getlevel(logger):
+	level = logger.getEffectiveLevel()
+	if level == 50:
+		str_level = 'fatal'
+	elif level == 40:
+		str_level = 'error'
+	elif level == 30:
+		str_level = 'warn'
+	elif level == 20:
+		str_level = 'info'
+	elif level == 10:
+		str_level = 'debug'
+	else:
+		str_level = 'notset'
+	return str_level
+
 
 ### default logger	----------------------------------------------------------
 class Logger:
+	# local logger for fail-over.
 	def __init__(self):
 		return
 

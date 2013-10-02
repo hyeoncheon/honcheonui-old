@@ -25,7 +25,11 @@ class Plugin(threading.Thread):
 		self.__rpt = threading.Event()
 
 		self.setName('%s-%s-%s' % (ptype, pname, pver))
-		self.loglevel = self.conf.get('loglevel')
+		loglevel = self.conf.get('loglevel')
+		self.logger.debug('  configured loglevel is %s' % loglevel)
+		loglevel = orion.util_logger_setlevel(self.logger, loglevel)
+		self.logger.info('  effective loglevel is %s' % loglevel)
+
 		if self.plugin_type == 'periodic':
 			self.int_chk = int(self.conf.get('check_interval', 0))
 			self.int_rpt = int(self.conf.get('report_interval', 0))
