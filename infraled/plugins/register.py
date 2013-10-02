@@ -15,6 +15,7 @@ class register(orion.plugin.Plugin):
 
 	def task_pre(self):
 		self.logger.debug('yes, i am here!')
+		self.mq_data_request("yes, i'm here!")
 		return
 
 

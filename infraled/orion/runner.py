@@ -200,8 +200,8 @@ class Daemon:
 			self.logger.setLevel(logging.DEBUG)
 
 		time_fmt = '%Y-%m-%d %H:%M:%S'
-		log_fmt = '%(asctime)s %(levelname)6s:%(name)s %(message)s'
-		dbg_fmt = log_fmt + '(%(filename)s:%(lineno)d)'
+		log_fmt = '%(asctime)s %(name)s %(message)s'
+		dbg_fmt = log_fmt + ' (%(levelname)s: %(filename)s:%(lineno)d)'
 		formatter_log = logging.Formatter(log_fmt, time_fmt)
 		formatter_dbg = logging.Formatter(dbg_fmt, time_fmt)
 

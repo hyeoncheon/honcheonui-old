@@ -90,7 +90,7 @@ class Config:
 		if len(nodelist) > 1:
 			self.logger.warn("eep! duplicated key found. using first!")
 		elif len(nodelist) < 1:
-			self.logger.warn("oops! no value found for key!:%s" % key)
+			self.logger.warn("eep! no value found for key!:%s" % key)
 			return default
 		return nodelist[0].text
 

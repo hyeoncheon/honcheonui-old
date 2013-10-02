@@ -23,7 +23,7 @@ class ping(orion.plugin.Plugin):
 		return
 
 	def task_report(self):
-		self.mq_data_request('',"report i'm alive~!")
+		self.mq_data_request("report i'm alive~!")
 		return
 
 

@@ -18,6 +18,7 @@ class Plugin(threading.Thread):
 		self.plugin_type = ptype
 		self.conf = conf
 		self.mqueue = message_queue
+		self.report_path = self.conf.get('report_path', '/server/ping')
 		self.logger = logger
 		self.__stop = threading.Event()
 		self.__chk = threading.Event()
@@ -52,9 +53,11 @@ class Plugin(threading.Thread):
 		return
 
 	def handler_loop(self):
+		self.logger.info('starting handling loop...')
 		while not self.__stop.is_set():
 			self.task_handler()
 			time.sleep(0.2)
+		self.logger.info('finished handling loop...')
 		return
 
 	def periodic(self):
@@ -100,9 +103,11 @@ class Plugin(threading.Thread):
 		return
 
 
-	def mq_data_request(self, path, message):
-		msg = { 'type':'data_request', 'from':self.getName(),
-				'path':path, 'message':message}
+	def mq_data_request(self, message, path = ''):
+		if path == '':
+			path = self.report_path
+		msg = { 'type':'data_request', 'from':self.getName(), 'path':path,
+				'message':message}
 		return self.mqueue.dq.put(msg)
 
 
@@ -178,6 +183,7 @@ class PluginManager():
 
 	def clean(self):
 		for p in self.plugins:
+			# XXX KeyboardInterrupt
 			p.join(0.1)
 			if not p.is_alive():
 				self.logger.info('<%s> is done.' % p.getName())
